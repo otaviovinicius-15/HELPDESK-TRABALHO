@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Chamados</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-gray-50 font-poppins">
+
+    <div class="app-layout">
+        <aside class="app-sidebar">
+            <div class="sidebar-header">
+                <h1 class="text-xl font-bold">Chamados.IO</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-target="dashboard">Dashboard</a>
+                <a href="#" class="nav-item" data-target="novo-chamado">Novo Chamado</a>
+                <a href="#" class="nav-item" data-target="meus-chamados">Meus Chamados</a>
+                <a href="#" class="nav-item" data-target="perfil">Perfil</a>
+            </nav>
+            <div class="sidebar-footer">
+                <p id="user-greeting">Olá, Usuário!</p>
+                <button id="logout-button" class="btn-logout">Sair</button>
+            </div>
+        </aside>
+
+        <main class="app-main">
+            <header class="app-header">
+                <h2 id="page-title">Dashboard</h2>
+            </header>
+
+            <div class="app-content">
+                <!-- Seção: Dashboard (Resumo) -->
+                <div id="section-dashboard" class="app-section">
+                    <div class="dashboard-grid">
+                        <div class="card metric-card">
+                            <h4>Abertos / Andamento</h4>
+                            <span class="metric-value text-warning" id="user-metric-ativos">0</span>
+                        </div>
+                        <div class="card metric-card">
+                            <h4>Concluídos</h4>
+                            <span class="metric-value text-success" id="user-metric-concluidos">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção: Novo Chamado -->
+                <div id="section-novo-chamado" class="app-section hidden">
+                    <div class="card">
+                        <h3 class="card-title">Abertura de Ticket</h3>
+                        <form id="new-ticket-form" class="mt-4">
+                            <div class="form-group">
+                                <label for="ticket-title">Título</label>
+                                <input type="text" id="ticket-title" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label for="ticket-description">Descrição</label>
+                                <textarea id="ticket-description" rows="5" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="ticket-priority">Prioridade e SLA</label>
+                                <select id="ticket-priority" required class="form-control w-auto">
+                                    <option value="Baixa" selected>Baixa (72h)</option>
+                                    <option value="Média">Média (24h)</option>
+                                    <option value="Alta">Alta (12h)</option>
+                                    <option value="Urgente">Urgente (4h SLA)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enviar Chamado</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Seção: Meus Chamados -->
+                <div id="section-meus-chamados" class="app-section hidden">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 class="card-title">Meus Chamados Recentes</h3>
+                        </div>
+                        <div id="tickets-list" class="mt-4" style="max-width: 800px;">
+                            <!-- Lista de chamados será inserida aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção: Perfil -->
+                <div id="section-perfil" class="app-section hidden">
+                    <div class="card" style="max-width: 500px;">
+                        <h3 class="card-title">Meu Perfil</h3>
+                        <form id="profile-form" class="mt-4">
+                            <div class="form-group">
+                                <label for="profile-email">E-mail (Reapenas leitura)</label>
+                                <input type="email" id="profile-email" readonly style="opacity: 0.7; cursor: not-allowed;">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-name">Nome de Exibição</label>
+                                <input type="text" id="profile-name" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Salvar Perfil</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Side Panel de Comentários -->
+    <div id="comments-modal" class="modal-overlay hidden">
+        <div class="side-panel">
+            <header class="panel-header">
+                <h3 class="panel-title">LOGS DO SISTEMA</h3>
+                <button id="close-modal-btn" class="btn-icon text-accent">&times;</button>
+            </header>
+            
+            <div id="comments-list" class="comments-container mt-4">
+                <!-- Comentários injetados aqui via JS -->
+            </div>
+            
+            <form id="new-comment-form" class="panel-form-container mt-4">
+                <input type="text" id="comment-text" required placeholder="_escrever log..." class="form-control flex-grow">
+                <button type="submit" class="btn btn-primary">ENVIAR</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/home.js"></script>
+</body>
+</html>
