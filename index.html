@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Chamados</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-gray-50 font-poppins">
+
+    <div class="auth-wrapper">
+        <aside class="auth-sidebar">
+            <div class="auth-sidebar-content">
+                <h1 class="text-3xl font-bold">Sistema de Chamados</h1>
+                <p class="mt-2 text-gray-300">Eficiência e modernidade para sua equipe de TI.</p>
+            </div>
+        </aside>
+
+        <main class="auth-main">
+            <div class="auth-card">
+                <h2 class="text-2xl font-bold text-center">Acesse sua Conta</h2>
+                <p class="text-center text-gray-400 mt-2">Bem-vindo de volta!</p>
+
+                <form id="login-form" class="mt-8">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Senha</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full mt-4">Entrar</button>
+                </form>
+
+                <p class="text-center mt-6 text-sm">
+                    Não tem uma conta? <a href="cadastro.html" class="text-accent hover:underline">Cadastre-se</a>
+                </p>
+
+                <div id="error-message" class="error-message mt-4"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>
