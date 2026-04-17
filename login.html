@@ -8,43 +8,40 @@
 </head>
 <body>
     <div class="login">
-        <header class="cabecalho_login">
-            <div>
-                <h2>HelpDesk Pro</h2>
-                <p>Sistema de Gerenciamento de Chamados</p>
-            </div>
-        </header>
-        
-           <main class="corpo_login">
+        <div class="login_box">
 
-            <div class="titulo_login">
-                <h2>Acesse sua conta</h2>
-            </div>
-        
-            <form class="form_login" action="login.php" method="POST">
-                <div class="campo">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" name="email" required>
+            <header class="cabecalho_login">
+                <div>
+                    <h2>HelpDesk Pro</h2>
+                    <p>Sistema de Gerenciamento de Chamados</p>
                 </div>
-
-                <div class="campo">
-                    <label for="password">Senha</label>
-                    <input type="password" id="senha" name="password" required>
+            </header>
+            
+            <main class="corpo_login">
+                <div class="titulo_login">
+                    <h2>Acesse sua conta</h2>
                 </div>
-
-                <div class="recuperar_senha">
-                    <a href="">Recuperar Senha</a>
+            
+                <form class="form_login" action="login.php" method="POST">
+                    <div class="campo">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="campo">
+                        <label for="password">Senha</label>
+                        <input type="password" id="senha" name="password" placeholder="********" required>
+                    </div>
+                    <div class="recuperar_senha">
+                        <a href="">Recuperar Senha</a>
+                    </div>
+                    <button type="submit">Entrar</button>
+                </form>
+                <div class="novo_cadastro">
+                    <p>Não tem uma conta ? <a href="cadastro.html">Cadastre-se</a></p>
                 </div>
+            </main>
 
-                <button type="submit">Entrar</button>
-
-            </form>
-
-            <div class="novo_cadastro">
-                <p>Não tem uma conta ? <a href="cadastro.html">Cadastre-se</a></p>
-            </div>
-
-           </main>
+        </div>
     </div>
 
     <footer class="rodape_login">
