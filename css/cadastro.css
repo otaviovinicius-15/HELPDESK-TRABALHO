@@ -1,0 +1,24 @@
+.cabecalho_cadastro{
+    text-align: center;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1; /* empurra o footer pra baixo */
+    text-align: center;
+}
+
+footer {
+    color: rgb(0, 0, 0);
+    text-align: center;
+    padding: 10px;
+}

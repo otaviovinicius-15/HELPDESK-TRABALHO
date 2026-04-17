@@ -3,33 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <title>Sistema de Chamados</title>
+    <link rel="stylesheet" href="css/login.css">
+    <title>HelpDesk Pro</title>
 </head>
 <body>
-    <header>
-        <div class="cabecalho_pagina">
-            <h1 id="titulo_cabecalho">HelpDesk Pro</h1>
-            <p id="txt_login">Sistema de Gerenciamento de Chamados</p>
-        </div>
-    </header>
+    <div class="login">
+        <header class="cabecalho_login">
+            <div>
+                <h2>HelpDesk Pro</h2>
+                <p>Sistema de Gerenciamento de Chamados</p>
+            </div>
+        </header>
+        
+           <main class="corpo_login">
 
-    <div class="login_user">
-        <h2 id="titulo_login">Acesse sua conta</h2>
-
-        <form id="form_login">
-            <label>E-mail</label>
-            <div class="input-box">
-                <input type="email" placeholder="seu@email.com">
+            <div class="titulo_login">
+                <h2>Acesse sua conta</h2>
             </div>
         
-            <label>Senha</label>
-            <div class="input-box">
-                <input type="password" placeholder="********">
+            <form class="form_login" action="login.php" method="POST">
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="campo">
+                    <label for="password">Senha</label>
+                    <input type="password" id="senha" name="password" required>
+                </div>
+
+                <div class="recuperar_senha">
+                    <a href="">Recuperar Senha</a>
+                </div>
+
+                <button type="submit">Entrar</button>
+
+            </form>
+
+            <div class="novo_cadastro">
+                <p>Não tem uma conta ? <a href="cadastro.html">Cadastre-se</a></p>
             </div>
 
-            <button id="botao_entrar">Entrar</button>
-        </form>
+           </main>
     </div>
+
+    <footer class="rodape_login">
+        <p>© 2026 HelpDesk Pro. Suporte técnico disponível 24/7</p>
+    </footer>
 </body>
 </html>
