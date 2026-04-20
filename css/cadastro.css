@@ -1,24 +1,120 @@
-.cabecalho_cadastro{
-    text-align: center;
-}
-
-html, body {
-    height: 100%;
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+/* Fundo */
 body {
+    font-family: Arial, sans-serif;
+    background-size: 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #000;
+    background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+}
+
+/* Container principal */
+.cadastro {
+    width: 420px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0, 255, 100, 0.15);
+}
+
+/* Cabeçalho */
+.cabecalho_cadastro {
+    background: #00c853;
+    color: white;
+    text-align: center;
+    padding: 30px;
+}
+
+.cabecalho_cadastro h2 {
+    font-size: 26px;
+}
+
+.cabecalho_cadastro p {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Corpo */
+.corpo_cadastro {
+    background: #1c1c1c;
+    padding: 35px;
+    color: white;
+}
+
+/* Formulário */
+.form_cadastro {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Campos */
+.campo {
     display: flex;
     flex-direction: column;
 }
 
-main {
-    flex: 1; /* empurra o footer pra baixo */
-    text-align: center;
+.campo label {
+    font-size: 14px;
+    margin-bottom: 6px;
 }
 
-footer {
-    color: rgb(0, 0, 0);
+/* Inputs */
+.campo input {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #2a2a2a;
+    color: white;
+    font-size: 15px;
+}
+
+.campo input:focus {
+    border-color: #00c853;
+    outline: none;
+}
+
+/* Botão Cadastrar */
+button {
+    margin-top: 10px;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    background: #00c853;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #00b248;
+}
+
+/* Link login */
+.login {
     text-align: center;
-    padding: 10px;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.login a {
+    color: #00e676;
+    text-decoration: none;
+}
+
+/* Rodapé */
+.rodape_cadastro {
+    margin-top: 20px;
+    color: #aaa;
+    font-size: 13px;
 }
