@@ -49,6 +49,16 @@ body {
     color: white;
 }
 
+/* Título */
+.titulo_cadastro{
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.titulo_cadastro h2 {
+    font-size: 22px;
+}
+
 /* Formulário */
 .form_cadastro {
     display: flex;
@@ -117,4 +127,13 @@ button:hover {
     margin-top: 20px;
     color: #aaa;
     font-size: 13px;
+}
+
+/* Alerta PHP*/
+.alerta {
+    text-align: center;
+    color: red;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
 }

@@ -138,3 +138,12 @@ button:hover {
     color: #aaa;
     font-size: 13px;
 }
+
+/* Alerta PHP*/
+.alerta {
+    text-align: center;
+    color: red;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
