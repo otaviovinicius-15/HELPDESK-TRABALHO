@@ -1,0 +1,149 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Fundo */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #000;
+    background-image: url('https://www.transparenttextures.com/patterns/asfalt-light.png');
+}
+
+/* Container principal */
+.login {
+    width: 420px; /* AUMENTADO */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(0, 255, 100, 0.15);
+}
+
+/* Cabeçalho */
+.cabecalho_login {
+    background: #00c853;
+    color: white;
+    text-align: center;
+    padding: 30px;
+}
+
+.cabecalho_login h2 {
+    font-size: 26px;
+}
+
+.cabecalho_login p {
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+/* Corpo */
+.corpo_login {
+    background: #1c1c1c;
+    padding: 35px;
+    color: white;
+}
+
+/* Título */
+.titulo_login {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.titulo_login h2 {
+    font-size: 22px;
+}
+
+/* Formulário */
+.form_login {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Campo */
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+/* Inputs */
+.campo input {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #2a2a2a;
+    color: white;
+    font-size: 15px;
+}
+
+.campo input:focus {
+    border-color: #00c853;
+    outline: none;
+}
+
+/* Recuperar senha */
+.recuperar_senha {
+    text-align: right;
+    font-size: 13px;
+}
+
+.recuperar_senha a {
+    color: #00e676;
+    text-decoration: none;
+}
+
+/* Botão Entrar */
+button {
+    margin-top: 10px;
+    padding: 14px;
+    border: none;
+    border-radius: 6px;
+    background: #00c853;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #00b248;
+}
+
+/* Cadastro */
+.novo_cadastro {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.novo_cadastro a {
+    color: #00e676;
+    text-decoration: none;
+}
+
+/* Rodapé */
+.rodape_login {
+    margin-top: 20px;
+    color: #aaa;
+    font-size: 13px;
+}
+
+/* Alerta PHP*/
+.alerta {
+    text-align: center;
+    color: red;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
