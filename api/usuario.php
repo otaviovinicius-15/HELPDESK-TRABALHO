@@ -34,8 +34,8 @@ function atualizarPerfil() {
     $updates = [];
     $params = [];
     $types = "";
+    global $conn;
 
-    // Atualizar nome
     if (isset($data['nome'])) {
         $nome = sanitizar($data['nome']);
         if (strlen($nome) < 2) {
@@ -43,12 +43,11 @@ function atualizarPerfil() {
             echo json_encode(['success' => false, 'message' => 'Nome deve ter pelo menos 2 caracteres']);
             return;
         }
-        $updates[] = "nome = ?";
+        $updates[] = "NOME = ?";
         $params[] = $nome;
         $types .= "s";
     }
 
-    // Atualizar email
     if (isset($data['email'])) {
         $email = sanitizar($data['email']);
         if (!validarEmail($email)) {
@@ -57,9 +56,7 @@ function atualizarPerfil() {
             return;
         }
 
-        // Verificar se email já existe (exceto o próprio)
-        global $conn;
-        $stmt_check = $conn->prepare("SELECT id FROM usuarios WHERE email = ? AND id != ?");
+        $stmt_check = $conn->prepare("SELECT ID_USUARIO FROM USUARIOS WHERE EMAIL = ? AND ID_USUARIO != ?");
         $stmt_check->bind_param("si", $email, $usuario_id);
         $stmt_check->execute();
 
@@ -69,12 +66,11 @@ function atualizarPerfil() {
             return;
         }
 
-        $updates[] = "email = ?";
+        $updates[] = "EMAIL = ?";
         $params[] = $email;
         $types .= "s";
     }
 
-    // Atualizar senha
     if (isset($data['senha_atual']) && isset($data['nova_senha'])) {
         $senha_atual = $data['senha_atual'];
         $nova_senha = $data['nova_senha'];
@@ -85,21 +81,20 @@ function atualizarPerfil() {
             return;
         }
 
-        // Verificar senha atual
-        $stmt_senha = $conn->prepare("SELECT senha FROM usuarios WHERE id = ?");
+        $stmt_senha = $conn->prepare("SELECT SENHA FROM USUARIOS WHERE ID_USUARIO = ?");
         $stmt_senha->bind_param("i", $usuario_id);
         $stmt_senha->execute();
         $result_senha = $stmt_senha->get_result();
         $usuario_db = $result_senha->fetch_assoc();
 
-        if (!password_verify($senha_atual, $usuario_db['senha'])) {
+        if (!password_verify($senha_atual, $usuario_db['SENHA'])) {
             http_response_code(400);
             echo json_encode(['success' => false, 'message' => 'Senha atual incorreta']);
             return;
         }
 
         $senha_hash = password_hash($nova_senha, PASSWORD_DEFAULT);
-        $updates[] = "senha = ?";
+        $updates[] = "SENHA = ?";
         $params[] = $senha_hash;
         $types .= "s";
     }
@@ -110,8 +105,7 @@ function atualizarPerfil() {
         return;
     }
 
-    // Executar update
-    $sql = "UPDATE usuarios SET " . implode(", ", $updates) . " WHERE id = ?";
+    $sql = "UPDATE USUARIOS SET " . implode(", ", $updates) . " WHERE ID_USUARIO = ?";
     $params[] = $usuario_id;
     $types .= "i";
 
@@ -119,7 +113,6 @@ function atualizarPerfil() {
     $stmt->bind_param($types, ...$params);
 
     if ($stmt->execute()) {
-        // Atualizar sessão se necessário
         if (isset($nome)) {
             $_SESSION['usuario_nome'] = $nome;
         }

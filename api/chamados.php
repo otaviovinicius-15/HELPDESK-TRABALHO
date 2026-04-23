@@ -25,6 +25,34 @@ switch ($method) {
         echo json_encode(['success' => false, 'message' => 'Método não permitido']);
 }
 
+function calcularSLAInfo($prioridade, $criado_em) {
+    $criado = new DateTime($criado_em);
+    switch (strtolower($prioridade)) {
+        case 'urgente':
+            $interval = 'PT4H';
+            break;
+        case 'alta':
+            $interval = 'PT12H';
+            break;
+        case 'media':
+            $interval = 'PT24H';
+            break;
+        default:
+            $interval = 'PT72H';
+            break;
+    }
+
+    $prazo = clone $criado;
+    $prazo->add(new DateInterval($interval));
+    $agora = new DateTime();
+    $horas_restantes = ($prazo->getTimestamp() - $agora->getTimestamp()) / 3600;
+
+    return [
+        'prazo_sla' => $prazo->format('Y-m-d H:i:s'),
+        'horas_restantes_sla' => round($horas_restantes, 2)
+    ];
+}
+
 function listarChamadosUsuario() {
     if (!verificarLogin()) {
         http_response_code(401);
@@ -39,20 +67,18 @@ function listarChamadosUsuario() {
 
     $stmt = $conn->prepare("
         SELECT
-            c.id,
-            c.titulo,
-            c.descricao,
-            c.prioridade,
-            c.status,
-            c.criado_em,
-            c.prazo_sla,
-            u.nome as usuario_nome,
-            (SELECT COUNT(*) FROM comentarios WHERE chamado_id = c.id) as total_comentarios,
-            TIMESTAMPDIFF(HOUR, NOW(), c.prazo_sla) as horas_restantes_sla
+            c.ID_CHAMADO as id,
+            c.TITULO as titulo,
+            c.DESCRICAO as descricao,
+            c.PRIORIDADE as prioridade,
+            c.STATUS_CHAMADO as status,
+            c.CRIADO_EM as criado_em,
+            u.NOME as usuario_nome,
+            (SELECT COUNT(*) FROM INTERACAO WHERE CHAMADO_ID = c.ID_CHAMADO) as total_comentarios
         FROM chamados c
-        JOIN usuarios u ON c.usuario_id = u.id
-        WHERE c.usuario_id = ?
-        ORDER BY c.criado_em DESC
+        JOIN USUARIOS u ON c.USUARIO_ID = u.ID_USUARIO
+        WHERE c.USUARIO_ID = ?
+        ORDER BY c.CRIADO_EM DESC
     ");
     $stmt->bind_param("i", $usuario_id);
     $stmt->execute();
@@ -60,7 +86,8 @@ function listarChamadosUsuario() {
 
     $chamados = [];
     while ($row = $result->fetch_assoc()) {
-        $chamados[] = $row;
+        $sla = calcularSLAInfo($row['prioridade'], $row['criado_em']);
+        $chamados[] = array_merge($row, $sla);
     }
 
     echo json_encode([
@@ -85,19 +112,17 @@ function listarChamadosAdmin() {
 
     $sql = "
         SELECT
-            c.id,
-            c.titulo,
-            c.descricao,
-            c.prioridade,
-            c.status,
-            c.criado_em,
-            c.prazo_sla,
-            u.nome as usuario_nome,
-            u.email as usuario_email,
-            (SELECT COUNT(*) FROM comentarios WHERE chamado_id = c.id) as total_comentarios,
-            TIMESTAMPDIFF(HOUR, NOW(), c.prazo_sla) as horas_restantes_sla
+            c.ID_CHAMADO as id,
+            c.TITULO as titulo,
+            c.DESCRICAO as descricao,
+            c.PRIORIDADE as prioridade,
+            c.STATUS_CHAMADO as status,
+            c.CRIADO_EM as criado_em,
+            u.NOME as usuario_nome,
+            u.EMAIL as usuario_email,
+            (SELECT COUNT(*) FROM INTERACAO WHERE CHAMADO_ID = c.ID_CHAMADO) as total_comentarios
         FROM chamados c
-        JOIN usuarios u ON c.usuario_id = u.id
+        JOIN USUARIOS u ON c.USUARIO_ID = u.ID_USUARIO
         WHERE 1=1
     ";
 
@@ -105,13 +130,13 @@ function listarChamadosAdmin() {
     $types = "";
 
     if ($status) {
-        $sql .= " AND c.status = ?";
+        $sql .= " AND c.STATUS_CHAMADO = ?";
         $params[] = $status;
         $types .= "s";
     }
 
     if ($prioridade) {
-        $sql .= " AND c.prioridade = ?";
+        $sql .= " AND c.PRIORIDADE = ?";
         $params[] = $prioridade;
         $types .= "s";
     }
@@ -139,17 +164,17 @@ function listarChamadosAdmin() {
 
     $chamados = [];
     while ($row = $result->fetch_assoc()) {
-        $chamados[] = $row;
+        $sla = calcularSLAInfo($row['prioridade'], $row['criado_em']);
+        $chamados[] = array_merge($row, $sla);
     }
 
     // Estatísticas
     $stmt_stats = $conn->prepare("
         SELECT
             COUNT(*) as total,
-            SUM(CASE WHEN status = 'Aberto' THEN 1 ELSE 0 END) as abertos,
-            SUM(CASE WHEN status = 'Em Andamento' THEN 1 ELSE 0 END) as em_andamento,
-            SUM(CASE WHEN status = 'Concluído' THEN 1 ELSE 0 END) as concluidos,
-            SUM(CASE WHEN status = 'Cancelado' THEN 1 ELSE 0 END) as cancelados
+            SUM(CASE WHEN STATUS_CHAMADO = 'aberto' THEN 1 ELSE 0 END) as abertos,
+            SUM(CASE WHEN STATUS_CHAMADO = 'andamento' THEN 1 ELSE 0 END) as em_andamento,
+            SUM(CASE WHEN STATUS_CHAMADO = 'fechado' THEN 1 ELSE 0 END) as concluidos
         FROM chamados
     ");
     $stmt_stats->execute();
@@ -193,19 +218,18 @@ function criarChamado() {
         return;
     }
 
-    $prioridades_validas = ['Baixa', 'Média', 'Alta', 'Urgente'];
+    $prioridades_validas = ['baixa', 'media', 'alta', 'urgente'];
     if (!in_array($prioridade, $prioridades_validas)) {
-        $prioridade = 'Média';
+        $prioridade = 'media';
     }
 
     $usuario = obterUsuarioLogado();
     $usuario_id = $usuario['id'];
-    $prazo_sla = calcularSLAPrazo($prioridade);
 
     global $conn;
 
-    $stmt = $conn->prepare("INSERT INTO chamados (usuario_id, titulo, descricao, prioridade, prazo_sla) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("issss", $usuario_id, $titulo, $descricao, $prioridade, $prazo_sla);
+    $stmt = $conn->prepare("INSERT INTO chamados (TITULO, DESCRICAO, PRIORIDADE, STATUS_CHAMADO, USUARIO_ID) VALUES (?, ?, ?, 'aberto', ?)");
+    $stmt->bind_param("sssi", $titulo, $descricao, $prioridade, $usuario_id);
 
     if ($stmt->execute()) {
         $chamado_id = $conn->insert_id;
@@ -216,8 +240,7 @@ function criarChamado() {
             'chamado' => [
                 'id' => $chamado_id,
                 'titulo' => $titulo,
-                'prioridade' => $prioridade,
-                'prazo_sla' => $prazo_sla
+                'prioridade' => $prioridade
             ]
         ]);
     } else {
@@ -244,7 +267,7 @@ function atualizarStatusChamado() {
     $chamado_id = (int) $data['id'];
     $status = sanitizar($data['status']);
 
-    $status_validos = ['Aberto', 'Em Andamento', 'Aguardando Resposta do Cliente', 'Concluído', 'Cancelado'];
+    $status_validos = ['aberto', 'andamento', 'fechado'];
     if (!in_array($status, $status_validos)) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Status inválido']);
@@ -253,7 +276,7 @@ function atualizarStatusChamado() {
 
     global $conn;
 
-    $stmt = $conn->prepare("UPDATE chamados SET status = ? WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE chamados SET STATUS_CHAMADO = ?, ATUALIZADO_EM = NOW() WHERE ID_CHAMADO = ?");
     $stmt->bind_param("si", $status, $chamado_id);
 
     if ($stmt->execute()) {

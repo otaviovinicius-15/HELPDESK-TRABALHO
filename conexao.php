@@ -1,7 +1,7 @@
 <?php
 // Conexão com MySQL para o sistema de helpdesk
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: http://localhost');
+header('Access-Control-Allow-Origin: http://localhost:8080');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 header('Access-Control-Allow-Credentials: true');
@@ -10,6 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
+
+// Configurações de sessão para segurança
+ini_set('session.cookie_httponly', 1);
+ini_set('session.use_only_cookies', 1);
+ini_set('session.gc_maxlifetime', 3600); // 1 hora
 
 // Iniciar sessão se não estiver ativa
 if (session_status() === PHP_SESSION_NONE) {
@@ -20,7 +25,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $host = 'localhost';
 $user = 'root';
 $password = '';
-$database = 'helpdesk';
+$database = 'helpdesk_pro';
 
 // Conectar ao MySQL
 $conn = new mysqli($host, $user, $password, $database);
@@ -37,11 +42,6 @@ if ($conn->connect_error) {
 
 // Configurar charset
 $conn->set_charset('utf8');
-
-// Configurações de sessão para segurança
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.gc_maxlifetime', 3600); // 1 hora
 
 // Função para verificar se usuário está logado
 function verificarLogin() {
@@ -67,18 +67,18 @@ function obterUsuarioLogado() {
     ];
 }
 
-// Função para sanitizar entrada
+// Função para sanitizar entrada contra SQL injection
 function sanitizar($data) {
     global $conn;
     return $conn->real_escape_string(trim($data));
 }
 
-// Função para validar email
+// Função para validar formato de email
 function validarEmail($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
-// Função para calcular prazo SLA baseado na prioridade
+// Função para calcular prazo SLA baseado na prioridade do chamado
 function calcularSLAPrazo($prioridade) {
     $agora = new DateTime();
 

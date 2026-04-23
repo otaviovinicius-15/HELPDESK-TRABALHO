@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body class="bg-gray-900 text-gray-50 font-poppins">
 
     <div class="app-layout">
@@ -50,25 +52,17 @@
                     </div>
                 </div>
 
-                <div class="card mt-6">
-                    <h3 class="card-title">Gráficos</h3>
-                    <div class="charts-container">
-                        <div class="chart-wrapper">
-                            <canvas id="ticketsStatusChart"></canvas>
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="ticketsPriorityChart"></canvas>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="card mt-6">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                         <h3 class="card-title" style="margin: 0;">Lista de Chamados
                             <span class="badge badge-aberto text-sm ml-2">SLA MONITOR</span>
                         </h3>
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; flex: 1; justify-content: flex-end;">
-                            <input type="text" id="admin-search-input" class="form-control" placeholder="🔍 BUSCAR TÍTULO, DESCRIÇÃO OU USUÁRIO..." style="max-width: 400px; text-transform: uppercase;">
+                            <input type="text" id="admin-search-input" class="form-control"
+                                placeholder="🔍 BUSCAR TÍTULO, DESCRIÇÃO OU USUÁRIO..."
+                                style="max-width: 400px; text-transform: uppercase;">
                             <select id="admin-status-filter" class="form-control w-auto">
                                 <option value="Todos">Ver Todos</option>
                                 <option value="Aberto">Status: Aberto</option>
@@ -119,132 +113,13 @@
             </div>
 
             <form id="admin-new-comment-form" class="panel-form-container mt-4">
-                <input type="text" id="admin-comment-text" required placeholder="_escrever log..." class="form-control flex-grow">
+                <input type="text" id="admin-comment-text" required placeholder="_escrever log..."
+                    class="form-control flex-grow">
                 <button type="submit" class="btn btn-primary">ENVIAR</button>
             </form>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/admin.js"></script>
 </body>
-</html>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="#" class="nav-item active">Todos os Chamados</a>
-                <a href="#" class="nav-item">Relatórios</a>
-                <a href="#" class="nav-item">Usuários</a>
-            </nav>
-            <div class="sidebar-footer">
-                <p id="admin-greeting">Olá, Admin!</p>
-                <button id="logout-button" class="btn-logout">Sair</button>
-            </div>
-        </aside>
-
-        <main class="app-main">
-            <header class="app-header">
-                <h2>Todos os Chamados</h2>
-            </header>
-
-            <div class="app-content">
-                <!-- Dashboard Metrics -->
-                <div class="dashboard-grid">
-                    <div class="card metric-card">
-                        <h4>Abertos</h4>
-                        <span class="metric-value text-accent" id="metric-abertos">0</span>
-                    </div>
-                    <div class="card metric-card">
-                        <h4>Em Andamento</h4>
-                        <span class="metric-value text-warning" id="metric-andamento">0</span>
-                    </div>
-                    <div class="card metric-card">
-                        <h4>Concluídos</h4>
-                        <span class="metric-value text-success" id="metric-concluidos">0</span>
-                    </div>
-                </div>
-
-                <div class="card mt-6">
-                    <h3 class="card-title">Gráficos</h3>
-                    <div class="charts-container">
-                        <div class="chart-wrapper">
-                            <canvas id="ticketsStatusChart"></canvas>
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="ticketsPriorityChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mt-6">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                        <h3 class="card-title" style="margin: 0;">Lista de Chamados 
-                            <span class="badge badge-aberto text-sm ml-2">SLA MONITOR</span>
-                        </h3>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; flex: 1; justify-content: flex-end;">
-                            <input type="text" id="admin-search-input" class="form-control" placeholder="🔍 BUSCAR TÍTULO, DESCRIÇÃO OU USUÁRIO..." style="max-width: 400px; text-transform: uppercase;">
-                            <select id="admin-status-filter" class="form-control w-auto">
-                                <option value="Todos">Ver Todos</option>
-                                <option value="Aberto">Status: Aberto</option>
-                                <option value="Em Andamento">Status: Em Andamento</option>
-                                <option value="Aguardando Resposta do Cliente">Status: Aguardando Resposta</option>
-                                <option value="Concluído">Status: Concluído</option>
-                                <option value="Cancelado">Status: Cancelado</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="all-tickets-list" class="mt-4">
-                        <!-- Lista de todos os chamados será inserida aqui -->
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Side Panel de Comentários e Status do Admin -->
-    <div id="admin-ticket-modal" class="modal-overlay hidden">
-        <div class="side-panel">
-            <header class="panel-header">
-                <h3 class="panel-title">GERENCIAR CHAMADO</h3>
-                <button id="close-admin-modal-btn" class="btn-icon text-accent">&times;</button>
-            </header>
-            
-            <div class="admin-ticket-actions mt-4">
-                <div class="form-group flex-col-form">
-                    <label for="admin-change-status" class="text-accent text-sm font-bold">MUDAR STATUS:</label>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <select id="admin-change-status" class="form-control flex-grow">
-                            <option value="Aberto">Aberto</option>
-                            <option value="Em Andamento">Em Andamento</option>
-                            <option value="Aguardando Resposta do Cliente">Aguardando Resposta</option>
-                            <option value="Concluído">Concluído</option>
-                            <option value="Cancelado">Cancelado</option>
-                        </select>
-                        <button id="btn-save-status" class="btn btn-secondary">ATUALIZAR</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-accent mt-4 text-sm font-bold">HISTÓRICO DE LOGS</div>
-            <hr class="divider mb-4" style="border-top-color: var(--border-color);">
-
-            <div id="admin-comments-list" class="comments-container">
-                <!-- Comentários -->
-            </div>
-            
-            <form id="admin-new-comment-form" class="panel-form-container mt-4">
-                <input type="text" id="admin-comment-text" required placeholder="_escrever log..." class="form-control flex-grow">
-                <button type="submit" class="btn btn-primary">ENVIAR</button>
-            </form>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script src="js/admin.js"></script>
-</body>
-</html>

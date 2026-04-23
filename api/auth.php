@@ -58,7 +58,7 @@ function fazerLogin() {
 
     global $conn;
 
-    $stmt = $conn->prepare("SELECT id, nome, email, senha, tipo FROM usuarios WHERE email = ?");
+    $stmt = $conn->prepare("SELECT ID_USUARIO, NOME, EMAIL, SENHA, TIPO FROM USUARIOS WHERE EMAIL = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -71,26 +71,26 @@ function fazerLogin() {
 
     $usuario = $result->fetch_assoc();
 
-    if (!password_verify($senha, $usuario['senha'])) {
+    if (!password_verify($senha, $usuario['SENHA'])) {
         http_response_code(401);
         echo json_encode(['success' => false, 'message' => 'Email ou senha incorretos']);
         return;
     }
 
     // Criar sessão
-    $_SESSION['usuario_id'] = $usuario['id'];
-    $_SESSION['usuario_nome'] = $usuario['nome'];
-    $_SESSION['usuario_email'] = $usuario['email'];
-    $_SESSION['usuario_tipo'] = $usuario['tipo'];
+    $_SESSION['usuario_id'] = $usuario['ID_USUARIO'];
+    $_SESSION['usuario_nome'] = $usuario['NOME'];
+    $_SESSION['usuario_email'] = $usuario['EMAIL'];
+    $_SESSION['usuario_tipo'] = $usuario['TIPO'];
 
     echo json_encode([
         'success' => true,
         'message' => 'Login realizado com sucesso',
         'usuario' => [
-            'id' => $usuario['id'],
-            'nome' => $usuario['nome'],
-            'email' => $usuario['email'],
-            'tipo' => $usuario['tipo']
+            'id' => $usuario['ID_USUARIO'],
+            'nome' => $usuario['NOME'],
+            'email' => $usuario['EMAIL'],
+            'tipo' => $usuario['TIPO']
         ]
     ]);
 }
@@ -129,7 +129,7 @@ function registrarUsuario() {
     global $conn;
 
     // Verificar se email já existe
-    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+    $stmt = $conn->prepare("SELECT ID_USUARIO FROM USUARIOS WHERE EMAIL = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -144,7 +144,7 @@ function registrarUsuario() {
     $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
 
     // Inserir usuário
-    $stmt = $conn->prepare("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO USUARIOS (NOME, EMAIL, SENHA, TIPO) VALUES (?, ?, ?, 'user')");
     $stmt->bind_param("sss", $nome, $email, $senha_hash);
 
     if ($stmt->execute()) {
@@ -154,7 +154,7 @@ function registrarUsuario() {
         $_SESSION['usuario_id'] = $usuario_id;
         $_SESSION['usuario_nome'] = $nome;
         $_SESSION['usuario_email'] = $email;
-        $_SESSION['usuario_tipo'] = 'usuario';
+        $_SESSION['usuario_tipo'] = 'user';
 
         echo json_encode([
             'success' => true,
@@ -163,7 +163,7 @@ function registrarUsuario() {
                 'id' => $usuario_id,
                 'nome' => $nome,
                 'email' => $email,
-                'tipo' => 'usuario'
+                'tipo' => 'user'
             ]
         ]);
     } else {

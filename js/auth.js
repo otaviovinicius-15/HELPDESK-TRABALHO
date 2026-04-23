@@ -2,8 +2,29 @@
 
 class AuthManager {
     constructor() {
-        this.baseURL = window.location.origin;
+        const path = window.location.pathname.replace(/\/[^\/]*$/, '');
+        this.baseURL = path === '' ? '' : path;
         this.checkSession();
+
+        // Event listeners para forms
+        document.getElementById('login-form')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const senha = document.getElementById('login-password').value;
+            this.login(email, senha);
+        });
+
+        document.getElementById('signup-form')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('password').value;
+            this.register(nome, email, senha);
+        });
+
+        // Event listeners para tabs
+        document.getElementById('login-tab')?.addEventListener('click', () => this.showLoginForm());
+        document.getElementById('register-tab')?.addEventListener('click', () => this.showRegisterForm());
     }
 
     // Verificar se usuário está logado ao carregar a página
@@ -18,13 +39,22 @@ class AuthManager {
 
             if (data.success && data.logged_in) {
                 this.setUser(data.usuario);
-                this.redirectBasedOnRole(data.usuario.tipo);
+                
+                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                const tSession = data.usuario.tipo ? data.usuario.tipo.toLowerCase() : '';
+                const targetPage = (tSession === 'admin' || tSession === 'adm') ? 'admin.html' : 'index.html';
+                
+                if (currentPage !== targetPage && currentPage !== '') {
+                    this.redirectBasedOnRole(data.usuario.tipo);
+                }
             } else {
-                this.showLoginForm();
+                this.clearUser();
+                window.location.href = 'Back end help desk/login.php';
             }
         } catch (error) {
             console.error('Erro ao verificar sessão:', error);
-            this.showLoginForm();
+            this.clearUser();
+            window.location.href = 'Back end help desk/login.php';
         }
     }
 
@@ -105,22 +135,23 @@ class AuthManager {
             this.clearUser();
             this.showSuccess('Logout realizado com sucesso!');
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = 'Back end help desk/login.php';
             }, 1000);
         } catch (error) {
             console.error('Erro no logout:', error);
             // Mesmo com erro, limpar dados locais
             this.clearUser();
-            window.location.href = 'index.html';
+            window.location.href = 'Back end help desk/login.php';
         }
     }
 
     // Redirecionar baseado no tipo de usuário
     redirectBasedOnRole(tipo) {
-        if (tipo === 'admin') {
+        const t = tipo ? tipo.toLowerCase() : '';
+        if (t === 'admin' || t === 'adm') {
             window.location.href = 'admin.html';
         } else {
-            window.location.href = 'home.html';
+            window.location.href = 'index.html';
         }
     }
 
@@ -148,16 +179,22 @@ class AuthManager {
     // Verificar se é admin
     isAdmin() {
         const usuario = this.getUser();
-        return usuario && usuario.tipo === 'admin';
+        if (!usuario || !usuario.tipo) return false;
+        const t = usuario.tipo.toLowerCase();
+        return (t === 'admin' || t === 'adm');
     }
 
     // Mostrar formulário de login
     showLoginForm() {
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
 
-        if (loginForm) loginForm.style.display = 'block';
-        if (registerForm) registerForm.style.display = 'none';
+        if (loginForm) loginForm.classList.remove('hidden');
+        if (registerForm) registerForm.classList.add('hidden');
+        if (loginTab) loginTab.classList.add('active');
+        if (registerTab) registerTab.classList.remove('active');
 
         // Esconder conteúdo protegido
         const protectedContent = document.getElementById('protectedContent');
@@ -168,9 +205,13 @@ class AuthManager {
     showRegisterForm() {
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
 
-        if (loginForm) loginForm.style.display = 'none';
-        if (registerForm) registerForm.style.display = 'block';
+        if (loginForm) loginForm.classList.add('hidden');
+        if (registerForm) registerForm.classList.remove('hidden');
+        if (loginTab) loginTab.classList.remove('active');
+        if (registerTab) registerTab.classList.add('active');
     }
 
     // Mostrar loading
@@ -286,80 +327,5 @@ function handleLogout() {
     if (confirm('Tem certeza que deseja sair?')) {
         window.authManager.logout();
     }
-}document.addEventListener('DOMContentLoaded', function() {
-    const auth = firebase.auth();
-    const database = firebase.database();
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-    const errorMessage = document.getElementById('error-message');
-    const ADMIN_EMAIL = 'adm.ti@empresa.com';
+}
 
-    // Function to display errors
-    function showError(message) {
-        if (errorMessage) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-        }
-    }
-
-    // Function to hide errors
-    function hideError() {
-        if (errorMessage) {
-            errorMessage.style.display = 'none';
-        }
-    }
-
-    // Login
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            hideError();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    if (userCredential.user.email === ADMIN_EMAIL) {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'home.html';
-                    }
-                })
-                .catch((error) => {
-                    showError(error.message);
-                });
-        });
-    }
-
-    // Signup
-    if (signupForm) {
-        signupForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            hideError();
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    // Save user info to database
-                    database.ref('usuarios/' + user.uid).set({
-                        nome: name,
-                        email: email
-                    });
-                    // Update user profile
-                    user.updateProfile({
-                        displayName: name
-                    }).then(() => {
-                         window.location.href = 'home.html';
-                    });
-                })
-                .catch((error) => {
-                    showError(error.message);
-                });
-        });
-    }
-});

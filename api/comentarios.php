@@ -38,8 +38,8 @@ function listarComentarios() {
     global $conn;
 
     $stmt_check = $conn->prepare("
-        SELECT c.id FROM chamados c
-        WHERE c.id = ? AND (c.usuario_id = ? OR ? = 'admin')
+        SELECT c.ID_CHAMADO FROM chamados c
+        WHERE c.ID_CHAMADO = ? AND (c.USUARIO_ID = ? OR ? = 'admin')
     ");
     $stmt_check->bind_param("iis", $chamado_id, $usuario['id'], $usuario['tipo']);
     $stmt_check->execute();
@@ -52,16 +52,16 @@ function listarComentarios() {
 
     $stmt = $conn->prepare("
         SELECT
-            com.id,
-            com.texto,
-            com.criado_em,
-            com.usuario_email,
-            u.nome as usuario_nome,
-            u.tipo as usuario_tipo
-        FROM comentarios com
-        JOIN usuarios u ON com.usuario_email = u.email
-        WHERE com.chamado_id = ?
-        ORDER BY com.criado_em ASC
+            i.ID_INTERACAO as id,
+            i.MENSAGEM as texto,
+            i.CRIADO_EM as criado_em,
+            u.NOME as usuario_nome,
+            u.TIPO as usuario_tipo,
+            u.EMAIL as usuario_email
+        FROM INTERACAO i
+        JOIN USUARIOS u ON i.USUARIO_ID = u.ID_USUARIO
+        WHERE i.CHAMADO_ID = ?
+        ORDER BY i.CRIADO_EM ASC
     ");
     $stmt->bind_param("i", $chamado_id);
     $stmt->execute();
@@ -114,8 +114,8 @@ function adicionarComentario() {
     global $conn;
 
     $stmt_check = $conn->prepare("
-        SELECT c.id FROM chamados c
-        WHERE c.id = ? AND (c.usuario_id = ? OR ? = 'admin')
+        SELECT c.ID_CHAMADO FROM chamados c
+        WHERE c.ID_CHAMADO = ? AND (c.USUARIO_ID = ? OR ? = 'admin')
     ");
     $stmt_check->bind_param("iis", $chamado_id, $usuario['id'], $usuario['tipo']);
     $stmt_check->execute();
@@ -126,8 +126,8 @@ function adicionarComentario() {
         return;
     }
 
-    $stmt = $conn->prepare("INSERT INTO comentarios (chamado_id, usuario_email, texto) VALUES (?, ?, ?)");
-    $stmt->bind_param("iss", $chamado_id, $usuario['email'], $texto);
+    $stmt = $conn->prepare("INSERT INTO INTERACAO (USUARIO_ID, CHAMADO_ID, MENSAGEM) VALUES (?, ?, ?)");
+    $stmt->bind_param("iis", $usuario['id'], $chamado_id, $texto);
 
     if ($stmt->execute()) {
         $comentario_id = $conn->insert_id;

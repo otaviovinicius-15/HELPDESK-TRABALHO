@@ -177,3 +177,9 @@ input.form-control:focus, textarea.form-control:focus, select.form-control:focus
     .auth-wrapper { grid-template-columns: 1fr; }
     .auth-sidebar { display: none; }
 }
+
+/* Auth Tabs */
+.auth-tabs { display: flex; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); }
+.auth-tab { flex: 1; padding: 0.75rem; text-align: center; background: transparent; border: none; color: var(--text-muted); cursor: pointer; transition: color 0.2s; }
+.auth-tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+.auth-form { }
